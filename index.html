@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f4f1">
+<title>Свои вещи — барахолка рядом</title>
+<style>
+:root{--bg:#f5f4f1;--paper:#fff;--ink:#242522;--muted:#777970;--line:#e8e7e1;--accent:#596657;--accent2:#e8ede6;--shadow:0 12px 32px rgba(34,36,31,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.wrap{max-width:1120px;margin:auto;padding:0 18px}
+header{padding:18px 0 14px;background:rgba(245,244,241,.94);position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;font-size:21px;font-weight:800;letter-spacing:-.7px}.logo{width:38px;height:38px;border-radius:13px;background:var(--accent);color:white;display:grid;place-items:center;font-size:20px}
+.brand small{display:block;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0}
+.primary{border:0;background:var(--accent);color:white;padding:12px 17px;border-radius:13px;font-weight:700}
+.hero{padding:34px 0 22px}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.3px}
+h1{font-size:clamp(30px,6vw,50px);line-height:1.04;letter-spacing:-1.8px;margin:10px 0 12px;max-width:680px}
+.hero p{color:var(--muted);font-size:16px;line-height:1.55;margin:0;max-width:540px}
+.searchbox{margin-top:22px;background:white;border:1px solid var(--line);border-radius:16px;padding:8px;display:flex;gap:8px;box-shadow:var(--shadow)}
+.searchbox input{border:0;outline:0;min-width:0;flex:1;padding:9px 10px;background:transparent}
+.searchbox button{border:0;background:#eeeee9;border-radius:11px;padding:0 15px}
+.filters{display:flex;gap:8px;overflow:auto;padding:5px 0 18px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;border:1px solid var(--line);background:white;color:#5e6059;padding:9px 14px;border-radius:99px;font-size:13px}
+.chip.active{background:var(--accent);color:white;border-color:var(--accent)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:12px 0 14px}.sectionhead h2{font-size:21px;margin:0;letter-spacing:-.5px}.count{color:var(--muted);font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-bottom:34px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 3px 12px rgba(34,36,31,.035)}
+.photo{height:155px;background:#e9e8e1;position:relative;overflow:hidden}.photo img{width:100%;height:100%;object-fit:cover;display:block}.tag{position:absolute;left:10px;top:10px;background:rgba(255,255,255,.92);padding:5px 9px;border-radius:30px;font-size:11px;font-weight:700}
+.info{padding:12px}.name{font-weight:700;font-size:15px;line-height:1.3;min-height:39px}.price{font-size:19px;font-weight:800;margin:8px 0 4px}.meta{color:var(--muted);font-size:12px}.contact{display:block;text-align:center;text-decoration:none;margin-top:11px;background:var(--accent2);color:#394638;padding:10px;border-radius:11px;font-weight:700;font-size:13px}
+.empty{grid-column:1/-1;text-align:center;padding:35px 15px;color:var(--muted);background:white;border:1px dashed #d8d8cf;border-radius:16px}
+footer{padding:22px 0 95px;color:var(--muted);font-size:12px;line-height:1.5;border-top:1px solid var(--line)}
+.fab{position:fixed;bottom:18px;left:18px;right:18px;z-index:6;max-width:500px;margin:auto;box-shadow:0 8px 25px rgba(34,36,31,.2);padding:15px;border-radius:15px}
+dialog{border:0;border-radius:22px;padding:0;width:min(92vw,500px);max-height:90vh;box-shadow:0 25px 80px #0003}dialog::backdrop{background:#17191488;backdrop-filter:blur(3px)}
+.modal{padding:21px;overflow:auto;max-height:90vh}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}.modal h2{margin:0;font-size:22px}.close{border:0;background:#f0f0eb;border-radius:50%;width:35px;height:35px;font-size:20px}
+label{display:block;font-size:13px;font-weight:700;margin:13px 0 6px}.field{width:100%;padding:12px;border:1px solid #deded6;border-radius:11px;background:#fff;outline-color:var(--accent)}textarea.field{min-height:75px;resize:vertical}.submit{width:100%;margin-top:17px;padding:14px}
+.note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}
+@media(min-width:650px){.wrap{padding:0 28px}.hero{padding-top:55px}.grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.photo{height:205px}.fab{left:auto;right:28px;width:auto}.card{border-radius:20px}}
+@media(min-width:950px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}.photo{height:190px}}
+</style>
+</head>
+<body>
+<header><div class="wrap top">
+  <div class="brand"><div class="logo">↗</div><div>Свои вещи<small>простая барахолка</small></div></div>
+  <button class="primary" onclick="openForm()">＋ Подать объявление</button>
+</div></header>
+<main class="wrap">
+<section class="hero">
+ <div class="eyebrow">Покупай с умом · продавай легко</div>
+ <h1>Хорошие вещи<br>ищут новый дом.</h1>
+ <p>Понятная площадка для продажи личных вещей. Найди что-то нужное или дай вещам вторую жизнь.</p>
+ <div class="searchbox"><input id="search" placeholder="Что ищем? Например, велосипед" aria-label="Поиск объявлений"><button onclick="render()">Найти</button></div>
+</section>
+<nav class="filters" id="filters" aria-label="Категории"></nav>
+<div class="sectionhead"><h2>Свежие объявления</h2><span class="count" id="count"></span></div>
+<section class="grid" id="listings"></section>
+<footer>«Свои вещи» — демонстрационный сайт. Данные объявлений, добавленных с этого устройства, сохраняются только в этом браузере. Для полноценной площадки с общими объявлениями, аккаунтами, модерацией и оплатой потребуется серверная часть. Будь осторожен: не отправляй предоплату незнакомым продавцам.</footer>
+</main>
+<button class="primary fab" onclick="openForm()">＋ Разместить своё объявление</button>
+
+<dialog id="formDialog"><form class="modal" id="listingForm">
+ <div class="modalhead"><h2>Новое объявление</h2><button type="button" class="close" onclick="closeForm()">×</button></div>
+ <label for="title">Что продаёте?</label><input class="field" id="title" required maxlength="60" placeholder="Например, куртка в отличном состоянии">
+ <label for="price">Цена (₽)</label><input class="field" id="price" type="number" min="0" required placeholder="1500">
+ <label for="category">Категория</label><select class="field" id="category"><option>Одежда</option><option>Электроника</option><option>Дом</option><option>Спорт и отдых</option><option>Другое</option></select>
+ <label for="condition">Состояние</label><select class="field" id="condition"><option>Отличное</option><option>Хорошее</option><option>Есть следы использования</option><option>Новое</option></select>
+ <label for="city">Город</label><input class="field" id="city" required placeholder="Ваш город">
+ <label for="phone">Телефон для связи</label><input class="field" id="phone" type="tel" required placeholder="+7 900 000-00-00">
+ <label for="photo">Ссылка на фото (необязательно)</label><input class="field" id="photo" type="url" placeholder="https://...">
+ <label for="description">Описание (необязательно)</label><textarea class="field" id="description" maxlength="300" placeholder="Расскажите о вещи"></textarea>
+ <button class="primary submit" type="submit">Опубликовать объявление</button>
+ <p class="note">В демоверсии объявление сохраняется только на этом устройстве и не становится видимым другим посетителям.</p>
+</form></dialog>
+<script>
+const categories=["Все","Одежда","Электроника","Дом","Спорт и отдых","Другое"];
+const samples=[
+ {title:"Смарт-часы, почти новые",price:3200,category:"Электроника",condition:"Отличное",city:"Москва",phone:"+79990000001",image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700"},
+ {title:"Кроссовки для прогулок",price:2100,category:"Одежда",condition:"Хорошее",city:"Санкт-Петербург",phone:"+79990000002",image:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700"},
+ {title:"Рюкзак городской",price:1800,category:"Другое",condition:"Отличное",city:"Казань",phone:"+79990000003",image:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700"},
+ {title:"Наушники беспроводные",price:2500,category:"Электроника",condition:"Хорошее",city:"Екатеринбург",phone:"+79990000004",image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700"}
+];
+
+let userItems=JSON.parse(localStorage.getItem("svoi-items")||"[]");
+let active="Все";
+function allItems(){return [...userItems,...samples]}
+function renderFilters(){
+ const box=document.getElementById("filters");box.innerHTML="";
+ categories.forEach(c=>{const b=document.createElement("button");b.className="chip"+(active===c?" active":"");b.textContent=c;b.onclick=()=>{active=c;renderFilters();render()};box.appendChild(b)})
+}
+function render(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ const data=allItems().filter(x=>(active==="Все"||x.category===active)&&(`${x.title} ${x.city} ${x.category}`).toLowerCase().includes(q));
+ document.getElementById("count").textContent=`${data.length} ${data.length===1?"объявление":"объявлений"}`;
+ const box=document.getElementById("listings");box.innerHTML="";
+ if(!data.length){box.innerHTML='<div class="empty">Ничего не найдено. Попробуйте изменить запрос или категорию.</div>';return}
+ data.forEach(x=>{
+  const card=document.createElement("article");card.className="card";
+  const safePhone=(x.phone||"").replace(/[^\d+]/g,"");
+  card.innerHTML=`<div class="photo">${x.image?`<img src="${x.image}" alt="" loading="lazy" onerror="this.style.display='none'">`:""}<span class="tag">${x.condition}</span></div><div class="info"><div class="name"></div><div class="price">${Number(x.price).toLocaleString("ru-RU")} ₽</div><div class="meta">${escapeHtml(x.city)} · ${escapeHtml(x.category)}</div><a class="contact" href="tel:${safePhone}">Связаться с продавцом</a></div>`;
+  card.querySelector(".name").textContent=x.title;box.appendChild(card);
+ })
+}
+function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function openForm(){document.getElementById("formDialog").showModal()}
+function closeForm(){document.getElementById("formDialog").close()}
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("listingForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const item={title:document.getElementById("title").value.trim(),price:Number(document.getElementById("price").value),category:document.getElementById("category").value,condition:document.getElementById("condition").value,city:document.getElementById("city").value.trim(),phone:document.getElementById("phone").value.trim(),image:document.getElementById("photo").value.trim(),description:document.getElementById("description").value.trim()};
+ userItems.unshift(item);localStorage.setItem("svoi-items",JSON.stringify(userItems));e.target.reset();closeForm();active="Все";renderFilters();render();window.scrollTo({top:document.querySelector(".sectionhead").offsetTop-90,behavior:"smooth"});
+});
+renderFilters();render();
+</script>
+</body></html>
