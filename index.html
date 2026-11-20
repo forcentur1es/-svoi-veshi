@@ -98,8 +98,51 @@ function render(){
   const card=document.createElement("article");card.className="card";
   const safePhone=(x.phone||"").replace(/[^\d+]/g,"");
   card.innerHTML=`<div class="photo">${x.image?`<img src="${x.image}" alt="" loading="lazy" onerror="this.style.display='none'">`:""}<span class="tag">${x.condition}</span></div><div class="info"><div class="name"></div><div class="price">${Number(x.price).toLocaleString("ru-RU")} ₽</div><div class="meta">${escapeHtml(x.city)} · ${escapeHtml(x.category)}</div><a class="contact" href="tel:${safePhone}">Связаться с продавцом</a></div>`;
-  card.querySelector(".name").textContent=x.title;box.appendChild(card);
+  card.querySelector(".name").textContent=x.title;
+
+card.onclick=()=>openItem(x);
+
+card.querySelector(".contact").onclick=e=>e.stopPropagation();
+
+box.appendChild(card);
  })
+}
+function openItem(item){
+
+ const dialog=document.createElement("dialog");
+
+ dialog.innerHTML=`
+
+ <div class="modal">
+
+  <div class="modalhead">
+
+   <h2>${escapeHtml(item.title)}</h2>
+
+   <button class="close" onclick="this.closest('dialog').close();this.closest('dialog').remove()">×</button>
+
+  </div>
+
+  ${item.image?`<img src="${escapeHtml(item.image)}" style="width:100%;border-radius:14px;margin-bottom:12px">`:""}
+
+  <h2>${Number(item.price).toLocaleString("ru-RU")} ₽</h2>
+
+  <p>${escapeHtml(item.description||"Описание не добавлено")}</p>
+
+  <p>Состояние: ${escapeHtml(item.condition)}</p>
+
+  <p>Город: ${escapeHtml(item.city)}</p>
+
+  <a class="contact" href="tel:${(item.phone||"").replace(/[^\d+]/g,"")}">Связаться с продавцом</a>
+
+ </div>`;
+
+ document.body.appendChild(dialog);
+
+ dialog.showModal();
+
+ dialog.addEventListener("click",e=>{if(e.target===dialog){dialog.close();dialog.remove()}});
+
 }
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function openForm(){document.getElementById("formDialog").showModal()}
