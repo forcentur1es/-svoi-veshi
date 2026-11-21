@@ -67,7 +67,8 @@ label{display:block;font-size:13px;font-weight:700;margin:13px 0 6px}.field{widt
  <label for="condition">Состояние</label><select class="field" id="condition"><option>Отличное</option><option>Хорошее</option><option>Есть следы использования</option><option>Новое</option></select>
  <label for="city">Город</label><input class="field" id="city" required placeholder="Ваш город">
  <label for="phone">Телефон для связи</label><input class="field" id="phone" type="tel" required placeholder="+7 900 000-00-00">
- <label for="photo">Ссылка на фото (необязательно)</label><input class="field" id="photo" type="url" placeholder="https://...">
+ <label for="photo">Фотографии (можно выбрать несколько)</label>
+<input class="field" id="photo" type="file" accept="image/*" multiple>
  <label for="description">Описание (необязательно)</label><textarea class="field" id="description" maxlength="300" placeholder="Расскажите о вещи"></textarea>
  <button class="primary submit" type="submit">Опубликовать объявление</button>
  <p class="note">В демоверсии объявление сохраняется только на этом устройстве и не становится видимым другим посетителям.</p>
@@ -148,10 +149,54 @@ function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;",
 function openForm(){document.getElementById("formDialog").showModal()}
 function closeForm(){document.getElementById("formDialog").close()}
 document.getElementById("search").addEventListener("input",render);
-document.getElementById("listingForm").addEventListener("submit",e=>{
+function compressImage(file){
+ return new Promise((resolve,reject)=>{
+  const reader=new FileReader();
+  reader.onload=()=>{
+   const img=new Image();
+   img.onload=()=>{
+    const canvas=document.createElement("canvas");
+    const scale=Math.min(1,900/Math.max(img.width,img.height));
+    canvas.width=Math.round(img.width*scale);
+    canvas.height=Math.round(img.height*scale);
+    const ctx=canvas.getContext("2d");
+    ctx.drawImage(img,0,0,canvas.width,canvas.height);
+    resolve(canvas.toDataURL("image/jpeg",0.75));
+   };
+   img.onerror=reject;
+   img.src=reader.result;
+  };
+  reader.onerror=reject;
+  reader.readAsDataURL(file);
+ });
+}
+
+document.getElementById("listingForm").addEventListener("submit",async e=>{
  e.preventDefault();
- const item={title:document.getElementById("title").value.trim(),price:Number(document.getElementById("price").value),category:document.getElementById("category").value,condition:document.getElementById("condition").value,city:document.getElementById("city").value.trim(),phone:document.getElementById("phone").value.trim(),image:document.getElementById("photo").value.trim(),description:document.getElementById("description").value.trim()};
- userItems.unshift(item);localStorage.setItem("svoi-items",JSON.stringify(userItems));e.target.reset();closeForm();active="Все";renderFilters();render();window.scrollTo({top:document.querySelector(".sectionhead").offsetTop-90,behavior:"smooth"});
+
+ const photoFiles=Array.from(document.getElementById("photo").files).slice(0,3);
+ const images=await Promise.all(photoFiles.map(compressImage));
+
+ const item={
+  title:document.getElementById("title").value.trim(),
+  price:Number(document.getElementById("price").value),
+  category:document.getElementById("category").value,
+  condition:document.getElementById("condition").value,
+  city:document.getElementById("city").value.trim(),
+  phone:document.getElementById("phone").value.trim(),
+  images:images,
+  image:images[0]||"",
+  description:document.getElementById("description").value.trim()
+ };
+
+ userItems.unshift(item);
+ localStorage.setItem("svoi-items",JSON.stringify(userItems));
+ e.target.reset();
+ closeForm();
+ active="Все";
+ renderFilters();
+ render();
+ window.scrollTo({top:document.querySelector(".sectionhead").offsetTop-90,behavior:"smooth"});
 });
 renderFilters();render();
 </script>
