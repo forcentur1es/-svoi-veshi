@@ -123,7 +123,7 @@ function openItem(item){
 
   </div>
 
-  ${item.image?`<img src="${escapeHtml(item.image)}" style="width:100%;border-radius:14px;margin-bottom:12px">`:""}
+  ${(item.images?.length ? item.images : item.image ? [item.image] : []).map(src => `<img src="${escapeHtml(src)}" style="width:100%;border-radius:14px;margin-bottom:12px">`).join("")}
 
   <h2>${Number(item.price).toLocaleString("ru-RU")} ₽</h2>
 
