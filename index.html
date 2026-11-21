@@ -109,41 +109,61 @@ box.appendChild(card);
  })
 }
 function openItem(item){
+ const photos=item.images?.length?item.images:item.image?[item.image]:[];
+ let currentPhoto=0;
 
  const dialog=document.createElement("dialog");
 
  dialog.innerHTML=`
-
  <div class="modal">
-
   <div class="modalhead">
-
    <h2>${escapeHtml(item.title)}</h2>
-
    <button class="close" onclick="this.closest('dialog').close();this.closest('dialog').remove()">×</button>
-
   </div>
 
-  ${(item.images?.length ? item.images : item.image ? [item.image] : []).map(src => `<img src="${escapeHtml(src)}" style="width:100%;border-radius:14px;margin-bottom:12px">`).join("")}
+  ${photos.length?`
+   <div style="position:relative;text-align:center">
+    <img id="galleryPhoto" src="${escapeHtml(photos[0])}" style="width:100%;max-height:350px;object-fit:contain;border-radius:14px">
+    ${photos.length>1?`
+     <button id="prevPhoto" style="position:absolute;left:8px;top:45%">❮</button>
+     <button id="nextPhoto" style="position:absolute;right:8px;top:45%">❯</button>
+     <p id="photoCount">1 / ${photos.length}</p>
+    `:""}
+   </div>
+  `:""}
 
   <h2>${Number(item.price).toLocaleString("ru-RU")} ₽</h2>
-
   <p>${escapeHtml(item.description||"Описание не добавлено")}</p>
-
   <p>Состояние: ${escapeHtml(item.condition)}</p>
-
   <p>Город: ${escapeHtml(item.city)}</p>
-
   <a class="contact" href="tel:${(item.phone||"").replace(/[^\d+]/g,"")}">Связаться с продавцом</a>
-
  </div>`;
 
  document.body.appendChild(dialog);
 
+ function showPhoto(){
+  dialog.querySelector("#galleryPhoto").src=photos[currentPhoto];
+  dialog.querySelector("#photoCount").textContent=`${currentPhoto+1} / ${photos.length}`;
+ }
+
+ if(photos.length>1){
+  dialog.querySelector("#prevPhoto").onclick=()=>{
+   currentPhoto=(currentPhoto-1+photos.length)%photos.length;
+   showPhoto();
+  };
+  dialog.querySelector("#nextPhoto").onclick=()=>{
+   currentPhoto=(currentPhoto+1)%photos.length;
+   showPhoto();
+  };
+ }
+
  dialog.showModal();
-
- dialog.addEventListener("click",e=>{if(e.target===dialog){dialog.close();dialog.remove()}});
-
+ dialog.addEventListener("click",e=>{
+  if(e.target===dialog){
+   dialog.close();
+   dialog.remove();
+  }
+ });
 }
 function escapeHtml(s){return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function openForm(){document.getElementById("formDialog").showModal()}
