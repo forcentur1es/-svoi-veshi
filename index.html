@@ -221,12 +221,29 @@ document.getElementById("photo").addEventListener("change",e=>{
  const files=Array.from(e.target.files).slice(0,3);
 
  files.forEach(file=>{
-  const img=document.createElement("img");
-  img.src=URL.createObjectURL(file);
-  img.style.width="100px";
-  img.style.height="100px";
-  img.style.objectFit="cover";
-  img.style.borderRadius="10px";
+  const box=document.createElement("div");
+box.style.position="relative";
+
+const img=document.createElement("img");
+img.src=URL.createObjectURL(file);
+img.style.width="100px";
+img.style.height="100px";
+img.style.objectFit="cover";
+img.style.borderRadius="10px";
+
+const remove=document.createElement("button");
+remove.textContent="×";
+remove.type="button";
+remove.style.position="absolute";
+remove.style.top="2px";
+remove.style.right="2px";
+remove.onclick=()=>{
+ box.remove();
+};
+
+box.appendChild(img);
+box.appendChild(remove);
+preview.appendChild(box);
   preview.appendChild(img);
  });
 });
