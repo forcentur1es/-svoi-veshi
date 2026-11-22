@@ -251,34 +251,39 @@ preview.appendChild(box);
 });
 document.getElementById("listingForm").addEventListener("submit",async e=>{
  e.preventDefault();
-console.log("Выбрано фотографий:", selectedFiles.length);
- const photoFiles=selectedFiles;
- const images=await Promise.all(photoFiles.map(compressImage));
 
- const item={
-  title:document.getElementById("title").value.trim(),
-  price:Number(document.getElementById("price").value),
-  category:document.getElementById("category").value,
-  condition:document.getElementById("condition").value,
-  city:document.getElementById("city").value.trim(),
-  phone:document.getElementById("phone").value.trim(),
-  images:images,
-  image:images[0]||"",
-  description:document.getElementById("description").value.trim()
- };
+ try {
+  const photoFiles=selectedFiles;
+  const images=await Promise.all(photoFiles.map(compressImage));
 
- userItems.unshift(item);
- localStorage.setItem("svoi-items",JSON.stringify(userItems));
- e.target.reset();
- closeForm();
- active="Все";
- renderFilters();
- render();
-  window.scrollTo({top:document.querySelector(".sectionhead").offsetTop-90,behavior:"smooth"});
+  const item={
+   title:document.getElementById("title").value.trim(),
+   price:Number(document.getElementById("price").value),
+   category:document.getElementById("category").value,
+   condition:document.getElementById("condition").value,
+   city:document.getElementById("city").value.trim(),
+   phone:document.getElementById("phone").value.trim(),
+   images:images,
+   image:images[0]||"",
+   description:document.getElementById("description").value.trim()
+  };
 
-}).catch(error=>{
- console.error(error);
- alert("Ошибка публикации: "+error.message);
+  userItems.unshift(item);
+  localStorage.setItem("svoi-items",JSON.stringify(userItems));
+
+  selectedFiles=[];
+  document.getElementById("photoPreview").innerHTML="";
+
+  e.target.reset();
+  closeForm();
+  active="Все";
+  renderFilters();
+  render();
+
+ } catch(error) {
+  console.error(error);
+  alert("Ошибка публикации: "+error.message);
+ }
 });
 renderFilters();render();
 </script>
