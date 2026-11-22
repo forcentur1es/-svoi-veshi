@@ -146,7 +146,7 @@ function openItem(item){
   dialog.querySelector("#photoCount").textContent=`${currentPhoto+1} / ${photos.length}`;
  }
  
-let touchStartX=0;
+if(photos.length>1){let touchStartX=0;
 
 const gallery=dialog.querySelector("#galleryPhoto");
 
@@ -168,6 +168,7 @@ gallery.addEventListener("touchend",e=>{
 
  showPhoto();
 },{passive:true});
+}
  if(photos.length>1){
   dialog.querySelector("#prevPhoto").onclick=()=>{
    currentPhoto=(currentPhoto-1+photos.length)%photos.length;
