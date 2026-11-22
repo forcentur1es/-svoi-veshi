@@ -214,11 +214,13 @@ function compressImage(file){
   reader.readAsDataURL(file);
  });
 }
+let selectedFiles=[];
 document.getElementById("photo").addEventListener("change",e=>{
  const preview=document.getElementById("photoPreview");
  preview.innerHTML="";
 
- const files=Array.from(e.target.files).slice(0,3);
+ selectedFiles=Array.from(e.target.files).slice(0,3);
+const files=selectedFiles;
 
  files.forEach(file=>{
   const box=document.createElement("div");
@@ -238,19 +240,19 @@ remove.style.position="absolute";
 remove.style.top="2px";
 remove.style.right="2px";
 remove.onclick=()=>{
+ selectedFiles=selectedFiles.filter(selectedFile=>selectedFile!==file);
  box.remove();
 };
 
 box.appendChild(img);
 box.appendChild(remove);
 preview.appendChild(box);
-  preview.appendChild(img);
  });
 });
 document.getElementById("listingForm").addEventListener("submit",async e=>{
  e.preventDefault();
 
- const photoFiles=Array.from(document.getElementById("photo").files).slice(0,3);
+ const photoFiles=selectedFiles;
  const images=await Promise.all(photoFiles.map(compressImage));
 
  const item={
