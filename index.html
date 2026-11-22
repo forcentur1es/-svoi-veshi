@@ -145,7 +145,29 @@ function openItem(item){
   dialog.querySelector("#galleryPhoto").src=photos[currentPhoto];
   dialog.querySelector("#photoCount").textContent=`${currentPhoto+1} / ${photos.length}`;
  }
+ 
+let touchStartX=0;
 
+const gallery=dialog.querySelector("#galleryPhoto");
+
+gallery.addEventListener("touchstart",e=>{
+ touchStartX=e.changedTouches[0].screenX;
+},{passive:true});
+
+gallery.addEventListener("touchend",e=>{
+ const touchEndX=e.changedTouches[0].screenX;
+ const difference=touchEndX-touchStartX;
+
+ if(Math.abs(difference)<50)return;
+
+ if(difference<0){
+  currentPhoto=(currentPhoto+1)%photos.length;
+ }else{
+  currentPhoto=(currentPhoto-1+photos.length)%photos.length;
+ }
+
+ showPhoto();
+},{passive:true});
  if(photos.length>1){
   dialog.querySelector("#prevPhoto").onclick=()=>{
    currentPhoto=(currentPhoto-1+photos.length)%photos.length;
