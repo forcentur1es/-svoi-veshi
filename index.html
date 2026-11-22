@@ -69,6 +69,7 @@ label{display:block;font-size:13px;font-weight:700;margin:13px 0 6px}.field{widt
  <label for="phone">Телефон для связи</label><input class="field" id="phone" type="tel" required placeholder="+7 900 000-00-00">
  <label for="photo">Фотографии (можно выбрать несколько)</label>
 <input class="field" id="photo" type="file" accept="image/*" multiple>
+<div id="photoPreview" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px"></div>
  <label for="description">Описание (необязательно)</label><textarea class="field" id="description" maxlength="300" placeholder="Расскажите о вещи"></textarea>
  <button class="primary submit" type="submit">Опубликовать объявление</button>
  <p class="note">В демоверсии объявление сохраняется только на этом устройстве и не становится видимым другим посетителям.</p>
@@ -213,7 +214,22 @@ function compressImage(file){
   reader.readAsDataURL(file);
  });
 }
+document.getElementById("photo").addEventListener("change",e=>{
+ const preview=document.getElementById("photoPreview");
+ preview.innerHTML="";
 
+ const files=Array.from(e.target.files).slice(0,3);
+
+ files.forEach(file=>{
+  const img=document.createElement("img");
+  img.src=URL.createObjectURL(file);
+  img.style.width="100px";
+  img.style.height="100px";
+  img.style.objectFit="cover";
+  img.style.borderRadius="10px";
+  preview.appendChild(img);
+ });
+});
 document.getElementById("listingForm").addEventListener("submit",async e=>{
  e.preventDefault();
 
