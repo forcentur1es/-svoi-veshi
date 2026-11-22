@@ -82,8 +82,58 @@ const samples=[
  {title:"Рюкзак городской",price:1800,category:"Другое",condition:"Отличное",city:"Казань",phone:"+79990000003",image:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700"},
  {title:"Наушники беспроводные",price:2500,category:"Электроника",condition:"Хорошее",city:"Екатеринбург",phone:"+79990000004",image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700"}
 ];
+function openSvoiDB(){
+ return new Promise((resolve,reject)=>{
+  const request=indexedDB.open("svoiDB",1);
 
-let userItems=JSON.parse(localStorage.getItem("svoi-items")||"[]");
+  request.onupgradeneeded=()=>{
+   request.result.createObjectStore("storage",{keyPath:"key"});
+  };
+
+  request.onsuccess=()=>resolve(request.result);
+  request.onerror=()=>reject(request.error);
+ });
+}
+
+async function saveUserItems(items){
+ const db=await openSvoiDB();
+
+ return new Promise((resolve,reject)=>{
+  const transaction=db.transaction("storage","readwrite");
+
+  transaction.objectStore("storage").put({
+   key:"userItems",
+   value:items
+  });
+
+  transaction.oncomplete=()=>resolve();
+  transaction.onerror=()=>reject(transaction.error);
+  transaction.onabort=()=>reject(transaction.error);
+ });
+}
+
+async function loadUserItems(){
+ const db=await openSvoiDB();
+
+ const saved=await new Promise((resolve,reject)=>{
+  const transaction=db.transaction("storage","readonly");
+  const request=transaction.objectStore("storage").get("userItems");
+
+  request.onsuccess=()=>resolve(request.result);
+  request.onerror=()=>reject(request.error);
+ });
+
+ if(saved){
+  return saved.value;
+ }
+
+ const oldItems=JSON.parse(localStorage.getItem("svoi-items")||"[]");
+
+ await saveUserItems(oldItems);
+
+ return oldItems;
+}
+let userItems=[];
 let active="Все";
 function allItems(){return [...userItems,...samples]}
 function renderFilters(){
@@ -269,7 +319,7 @@ document.getElementById("listingForm").addEventListener("submit",async e=>{
   };
 
   userItems.unshift(item);
-  localStorage.setItem("svoi-items",JSON.stringify(userItems));
+  await saveUserItems(userItems);
 
   selectedFiles=[];
   document.getElementById("photoPreview").innerHTML="";
@@ -285,6 +335,15 @@ document.getElementById("listingForm").addEventListener("submit",async e=>{
   alert("Ошибка публикации: "+error.message);
  }
 });
-renderFilters();render();
+(async()=>{
+ try{
+  userItems=await loadUserItems();
+  renderFilters();
+  render();
+ }catch(error){
+  console.error(error);
+  alert("Не удалось загрузить объявления: "+error.message);
+ }
+})();
 </script>
 </body></html>
