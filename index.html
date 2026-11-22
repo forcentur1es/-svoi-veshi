@@ -251,7 +251,7 @@ preview.appendChild(box);
 });
 document.getElementById("listingForm").addEventListener("submit",async e=>{
  e.preventDefault();
-
+console.log("Выбрано фотографий:", selectedFiles.length);
  const photoFiles=selectedFiles;
  const images=await Promise.all(photoFiles.map(compressImage));
 
